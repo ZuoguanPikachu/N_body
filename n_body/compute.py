@@ -2,10 +2,9 @@ import numpy
 
 
 G = 6.673*1e-11
-dt = 0.0005*3600
 
 
-def compute(stars):
+def update(stars, dt):
     n = len(stars)
 
     for i in range(n):

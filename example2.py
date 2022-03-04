@@ -1,6 +1,7 @@
 from n_body.star import Star
 from n_body.compute import update
-from utils.render import render_one
+from utils.render import render_series
+from utils.record import Recorder
 from utils.progress_bar import progress_bar
 import os
 
@@ -16,13 +17,17 @@ if __name__ == "__main__":
         Star(m=5.972*1e24, pos=[1.521*1e11, 0], vel=[0, 29783], r=12, color="blue")
     ]
 
-    os.mkdir("renders")
+    recoder = Recorder(stars)
 
-    for t in progress_bar(4400):
+    for t in progress_bar(26400):
         for i in range(sub_stepping):
             stars = update(stars, dt)
 
-        render_one(stars, t, 3.04*1e8)
-
+        recoder.add(stars)
     print("")
-    os.system("ffmpeg -f image2 -i renders/%d.jpg -r 60 m.mp4")
+
+    recoder.save("data.pk")
+
+    os.mkdir("renders")
+    render_series(k=3.04*1e8)
+    os.system("ffmpeg -f image2 -i renders/%d.png -r 60 m.mp4")
